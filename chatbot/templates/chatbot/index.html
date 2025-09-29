@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chatbot</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'chatbot/style.css' %}">
+  </head>
+  <body>
+    <div class="container">
+      <h2>Chatbot</h2>
+      <div id="chatbox" aria-live="polite"></div>
+
+      <div class="composer">
+        <input type="text" id="userInput" placeholder="Type a message..." autocomplete="off" />
+        <button id="sendBtn">Send</button>
+      </div>
+    </div>
+
+    <script>
+      const chatbox = document.getElementById('chatbox');
+      const inputEl = document.getElementById('userInput');
+      const sendBtn = document.getElementById('sendBtn');
+
+      function appendMessage(who, text) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'message ' + (who === 'user' ? 'user' : 'bot');
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.textContent = text;
+        wrapper.appendChild(bubble);
+        chatbox.appendChild(wrapper);
+        chatbox.scrollTop = chatbox.scrollHeight;
+      }
+
+      async function sendMessage() {
+        const input = inputEl.value.trim();
+        if (!input) return;
+        appendMessage('user', input);
+        inputEl.value = '';
+
+        try {
+          const res = await fetch('/chat/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+            body: JSON.stringify({ message: input }),
+          });
+          const data = await res.json();
+          appendMessage('bot', data.reply);
+        } catch (err) {
+          appendMessage('bot', 'Sorry, an error occurred.');
+          console.error(err);
+        }
+      }
+
+      sendBtn.addEventListener('click', sendMessage);
+      inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+      // simple CSRF helper
+      function getCookie(name) {
+        const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+        return v ? v.pop() : '';
+      }
+    </script>
+  </body>
+  </html>
+

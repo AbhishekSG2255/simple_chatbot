@@ -1,0 +1,23 @@
+[
+  {
+    "question": "What are your opening hours?",
+    "answer": "We're open 9am–6pm."
+  },
+  {
+    "question": "Where are you located?",
+    "answer": "We are located at TVM Main Street."
+  },
+  {
+    "question": "How can I contact support?",
+    "answer": "You can contact support at support@abcd.com."
+  },
+  {
+    "question": "What is your return policy?",
+    "answer": "You can return any item within 30 days for a full refund."
+  },
+  {
+    "question": "What is your privacy policy?",
+    "answer": "We take your privacy seriously. Please review our privacy policy for details."
+  }
+
+]
